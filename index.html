@@ -122,10 +122,13 @@
     .modal-btn:hover{border-color:var(--green);color:var(--green)}
     #pdf-frame{width:100%;max-width:860px;flex:1;border:1px solid var(--border);border-radius:10px;
       background:#fff;max-height:80vh}
+      #matrix { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.10; pointer-events: none;
+}
   </style>
 </head>
-<body>
 
+<body>
+<canvas id="matrix"></canvas>
 <!-- INTRO -->
 <div id="intro" onclick="skip()">
   <div class="intro-grid"></div>
@@ -276,5 +279,32 @@
     document.getElementById('pdf-frame').src = '';
   }
 </script>
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+const chars = '01アイウエオカキクケコサシスセソタチツテト';
+const fontSize = 14;
+const columns = canvas.width / fontSize;
+const drops = Array(Math.floor(columns)).fill(1);
+function drawMatrix() {
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#00ff41';
+  ctx.font = fontSize + 'px monospace';
+  drops.forEach((y, i) => {
+    const char = chars[Math.floor(Math.random() * chars.length)];
+    ctx.fillText(char, i * fontSize, y * fontSize);
+    if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+    drops[i]++;
+  });
+}
+setInterval(drawMatrix, 50);
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
+
 </body>
+
 </html>
